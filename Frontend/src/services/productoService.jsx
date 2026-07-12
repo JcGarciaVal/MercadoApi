@@ -14,7 +14,17 @@ async function guardarProducto(producto) {
     await axios.post(API, producto);
 }
 
+async function eliminarProducto(id) {
+    await axios.delete(`${API}/${id}`);
+}
+
+async function actualizarProducto(id, producto) {
+    await axios.put(`${API}/${id}`, producto);
+}
+
 export default {
     obtenerProductos,
-    guardarProducto
+    guardarProducto,
+    eliminarProducto,
+    actualizarProducto
 };

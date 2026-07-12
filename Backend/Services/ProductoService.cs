@@ -38,10 +38,28 @@ public class ProductoService : IProductoService
             p.Id == id);
 
         if (producto == null)
-            throw new Exception("Producto no Existe");
+            throw new Exception("Producto no encotrado.");
 
         lista.Remove(producto);
 
         _productosJson.GuardarDatosJson(lista);
+    }
+
+    public bool ActualizarProducto(int id, Producto productoActualizado)
+    {
+        var lista = _productosJson.EntregarDatosJson();
+
+        var producto = lista.FirstOrDefault(p => p.Id == id);
+
+        if (producto == null)
+            return false;
+
+        producto.Nombre = productoActualizado.Nombre;
+        producto.Precio = productoActualizado.Precio;
+        producto.Stock = productoActualizado.Stock;
+
+        _productosJson.GuardarDatosJson(lista);
+
+        return true;
     }
 }

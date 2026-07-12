@@ -38,4 +38,15 @@ public class ProductoController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{id}")]
+    public IActionResult ActualizarProducto(int id, [FromBody] Producto producto)
+    {
+        var actualizado = _productoService.ActualizarProducto(id, producto);
+
+        if (!actualizado)
+            return NotFound();
+
+        return NoContent();
+    }
 }

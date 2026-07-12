@@ -1,5 +1,4 @@
-function ProductoList({ productos }) {
-
+function ProductoList({ productos, eliminarProducto, seleccionarProducto }) {
     return (
         <>
             <h2>Listado de Productos</h2>
@@ -12,6 +11,7 @@ function ProductoList({ productos }) {
                         <th>Nombre</th>
                         <th>Precio</th>
                         <th>Stock</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
 
@@ -24,8 +24,19 @@ function ProductoList({ productos }) {
                             <td>{producto.nombre}</td>
                             <td>{producto.precio}</td>
                             <td>{producto.stock}</td>
+                            <td>
+                                <button
+                                    onClick={() => seleccionarProducto(producto)}
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => eliminarProducto(producto.id)}
+                                >
+                                    Eliminar
+                                </button>
+                            </td>
                         </tr>
-
                     ))}
 
                 </tbody>
