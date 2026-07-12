@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "Nombre": "Lechuga",
+    "Precio": 300,
+    "Stock": 15
+  },
+  {
+    "Id": 2,
+    "Nombre": "Rosal",
+    "Precio": 200,
+    "Stock": 20
+  },
+  {
+    "Id": 3,
+    "Nombre": "Sopa",
+    "Precio": 200,
+    "Stock": 10
+  },
+  {
+    "Id": 4,
+    "Nombre": "Audifonos",
+    "Precio": 6000,
+    "Stock": 10
+  }
+]
