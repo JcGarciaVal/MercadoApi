@@ -1,6 +1,7 @@
 using Backend.Data;
 using Backend.Interfaces;
 using Backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configuracion de Base de datos
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 
 // Configuración de CORS para React
 builder.Services.AddCors(options =>
@@ -21,7 +28,6 @@ builder.Services.AddCors(options =>
 });
 
 // Inyección de dependencias
-builder.Services.AddScoped<IProductoJson, ProductoJson>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 
 var app = builder.Build();

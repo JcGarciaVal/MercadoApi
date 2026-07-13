@@ -1,6 +1,6 @@
-namespace Backend.Models;
+namespace Backend.DTOs;
 
-public class Producto
+public class ProductoDto
 {
     public int Id { get; set; }
 

@@ -1,6 +1,9 @@
 using Backend.Interfaces;
 using Backend.Models;
+using Backend.DTOs;
+using Backend.Mappers;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Backend.Controllers;
 
@@ -19,16 +22,21 @@ public class ProductoController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        return Ok(_productoService.MostrarTodo());
+        var productos = _productoService.MostrarTodo();
+
+        var productosDto = productos
+            .Select(ProductoMapper.ToDto);
+
+        return Ok(productosDto);
     }
 
     [HttpPost]
-    public IActionResult CrearProducto([FromBody] Producto producto)
+    public IActionResult CrearProducto([FromBody] CrearProductoDto dto)
     {
+        var producto = ProductoMapper.ToEntity(dto);
         _productoService.GuardarProducto(producto);
-        Console.WriteLine(producto.Nombre);
 
-        return CreatedAtAction(nameof(GetAll), producto);
+        return Created();
     }
 
     [HttpDelete("{id}")]
@@ -40,12 +48,13 @@ public class ProductoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult ActualizarProducto(int id, [FromBody] Producto producto)
+    public IActionResult ActualizarProducto(
+    int id,
+    [FromBody] ActualizarProductoDto dto)
     {
-        var actualizado = _productoService.ActualizarProducto(id, producto);
+        var producto = ProductoMapper.ToEntity(dto);
 
-        if (!actualizado)
-            return NotFound();
+        _productoService.ActualizarProducto(id, producto);
 
         return NoContent();
     }

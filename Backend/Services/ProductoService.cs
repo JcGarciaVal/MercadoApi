@@ -6,60 +6,60 @@ namespace Backend.Services;
 
 public class ProductoService : IProductoService
 {
-    private readonly IProductoJson _productosJson;
+    private readonly AppDbContext _context;
 
-    public ProductoService(IProductoJson productosJson)
+
+    public ProductoService(AppDbContext context)
     {
-        _productosJson = productosJson;
+        _context = context;
     }
+
+
     public List<Producto> MostrarTodo()
     {
-        return _productosJson.EntregarDatosJson();
+        return _context.Productos.ToList();
     }
+
 
     public void GuardarProducto(Producto producto)
     {
-        var lista = _productosJson.EntregarDatosJson();
+        _context.Productos.Add(producto);
 
-        producto.Id = lista.Any()
-            ? lista.Max(p => p.Id) + 1
-            : 1;
-
-        lista.Add(producto);
-
-        _productosJson.GuardarDatosJson(lista);
+        _context.SaveChanges();
     }
+
 
     public void EliminarProducto(int id)
     {
-        var lista = _productosJson.EntregarDatosJson();
+        var producto = _context.Productos
+            .FirstOrDefault(p => p.Id == id);
 
-        var producto = lista.FirstOrDefault(p =>
-            p.Id == id);
 
         if (producto == null)
-            throw new Exception("Producto no encotrado.");
+            throw new Exception("Producto no encontrado");
 
-        lista.Remove(producto);
 
-        _productosJson.GuardarDatosJson(lista);
+        _context.Productos.Remove(producto);
+
+        _context.SaveChanges();
     }
 
-    public bool ActualizarProducto(int id, Producto productoActualizado)
-    {
-        var lista = _productosJson.EntregarDatosJson();
 
-        var producto = lista.FirstOrDefault(p => p.Id == id);
+    public void ActualizarProducto(int id, Producto productoActualizado)
+    {
+        var producto = _context.Productos
+            .FirstOrDefault(p => p.Id == id);
+
 
         if (producto == null)
-            return false;
+            throw new Exception("Producto no encontrado");
+
 
         producto.Nombre = productoActualizado.Nombre;
         producto.Precio = productoActualizado.Precio;
         producto.Stock = productoActualizado.Stock;
 
-        _productosJson.GuardarDatosJson(lista);
 
-        return true;
+        _context.SaveChanges();
     }
 }
