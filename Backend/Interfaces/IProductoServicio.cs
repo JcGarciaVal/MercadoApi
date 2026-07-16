@@ -3,8 +3,13 @@ namespace Backend.Interfaces;
 
 public interface IProductoService
 {
-    List<Producto> MostrarTodo();
-    void GuardarProducto(Producto producto);
-    void EliminarProducto(int id);
-    void ActualizarProducto(int id, Producto productoActualizado);
+    Task<List<Producto>> MostrarTodo();
+
+    Task<Producto> ObtenerPorId(int id);
+
+    Task GuardarProducto(Producto producto);
+
+    Task ActualizarProducto(int id, Producto producto);
+
+    Task EliminarProducto(int id);
 }

@@ -1,8 +1,8 @@
 using Backend.Interfaces;
-using Backend.Models;
 using Backend.DTOs;
 using Backend.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Backend.Exceptions;
 
 
 namespace Backend.Controllers;
@@ -20,9 +20,9 @@ public class ProductoController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var productos = _productoService.MostrarTodo();
+        var productos = await _productoService.MostrarTodo();
 
         var productosDto = productos
             .Select(ProductoMapper.ToDto);
@@ -30,31 +30,46 @@ public class ProductoController : ControllerBase
         return Ok(productosDto);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> ObtenerPorId(int id)
+    {
+        var producto = await _productoService.ObtenerPorId(id);
+
+        var productoDto = ProductoMapper.ToDto(producto);
+
+        return Ok(productoDto);
+    }
+
     [HttpPost]
-    public IActionResult CrearProducto([FromBody] CrearProductoDto dto)
+    public async Task<IActionResult> CrearProducto([FromBody] CrearProductoDto dto)
     {
         var producto = ProductoMapper.ToEntity(dto);
-        _productoService.GuardarProducto(producto);
 
-        return Created();
+        await _productoService.GuardarProducto(producto);
+
+        return CreatedAtAction(
+            nameof(GetAll),
+            new { id = producto.Id },
+            ProductoMapper.ToDto(producto)
+        );
     }
 
     [HttpDelete("{id}")]
-    public IActionResult EliminarProducto(int id)
+    public async Task<IActionResult> EliminarProducto(int id)
     {
-        _productoService.EliminarProducto(id);
+        await _productoService.EliminarProducto(id);
 
         return NoContent();
     }
 
     [HttpPut("{id}")]
-    public IActionResult ActualizarProducto(
+    public async Task<IActionResult> ActualizarProducto(
     int id,
     [FromBody] ActualizarProductoDto dto)
     {
         var producto = ProductoMapper.ToEntity(dto);
 
-        _productoService.ActualizarProducto(id, producto);
+        await _productoService.ActualizarProducto(id, producto);
 
         return NoContent();
     }
