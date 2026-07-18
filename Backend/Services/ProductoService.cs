@@ -33,6 +33,13 @@ public class ProductoService : IProductoService
         return producto;
     }
 
+    public async Task<List<Producto>> BuscarPorNombre(string nombre)
+    {
+        return await _context.Productos
+            .Where(p => p.Nombre.Contains(nombre))
+            .ToListAsync();
+    }
+
 
     public async Task GuardarProducto(Producto producto)
     {

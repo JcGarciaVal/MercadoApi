@@ -7,6 +7,8 @@ public interface IProductoService
 
     Task<Producto> ObtenerPorId(int id);
 
+    Task<List<Producto>> BuscarPorNombre(string nombre);
+
     Task GuardarProducto(Producto producto);
 
     Task ActualizarProducto(int id, Producto producto);

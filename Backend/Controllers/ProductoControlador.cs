@@ -40,6 +40,17 @@ public class ProductoController : ControllerBase
         return Ok(productoDto);
     }
 
+    [HttpGet("buscar")]
+    public async Task<IActionResult> BuscarPorNombre([FromQuery] string nombre)
+    {
+        var productos = await _productoService.BuscarPorNombre(nombre);
+
+        var productosDto = productos
+            .Select(ProductoMapper.ToDto);
+
+        return Ok(productosDto);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CrearProducto([FromBody] CrearProductoDto dto)
     {
