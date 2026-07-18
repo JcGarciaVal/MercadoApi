@@ -1,9 +1,12 @@
 using Backend.Models;
+using Backend.DTOs;
+
 namespace Backend.Interfaces;
 
 public interface IProductoService
 {
     Task<List<Producto>> MostrarTodo();
+    Task<List<Producto>> Filtrar(FiltrosProductoDto filtros);
 
     Task<Producto> ObtenerPorId(int id);
 

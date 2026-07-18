@@ -3,6 +3,7 @@ using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Backend.Exceptions;
+using Backend.DTOs;
 
 namespace Backend.Services;
 
@@ -76,5 +77,46 @@ public class ProductoService : IProductoService
         producto.Stock = productoActualizado.Stock;
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Producto>> Filtrar(FiltrosProductoDto filtros)
+    {
+        var query = _context.Productos.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(filtros.Nombre))
+        {
+            query = query.Where(p =>
+                p.Nombre.Contains(filtros.Nombre));
+        }
+
+        if (filtros.PrecioMin.HasValue)
+        {
+            query = query.Where(p =>
+                p.Precio >= filtros.PrecioMin.Value);
+        }
+
+        if (filtros.PrecioMax.HasValue)
+        {
+            query = query.Where(p =>
+                p.Precio <= filtros.PrecioMax.Value);
+        }
+
+        if (filtros.StockMin.HasValue)
+        {
+            query = query.Where(p =>
+                p.Stock >= filtros.StockMin.Value);
+        }
+
+        if (filtros.StockMax.HasValue)
+        {
+            query = query.Where(p =>
+                p.Stock <= filtros.StockMax.Value);
+        }
+
+        query = query
+            .Skip((filtros.Page - 1) * filtros.PageSize)
+            .Take(filtros.PageSize);
+
+        return await query.ToListAsync();
     }
 }

@@ -2,8 +2,6 @@ using Backend.Interfaces;
 using Backend.DTOs;
 using Backend.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using Backend.Exceptions;
-
 
 namespace Backend.Controllers;
 
@@ -17,17 +15,6 @@ public class ProductoController : ControllerBase
     {
 
         _productoService = productoService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var productos = await _productoService.MostrarTodo();
-
-        var productosDto = productos
-            .Select(ProductoMapper.ToDto);
-
-        return Ok(productosDto);
     }
 
     [HttpGet("{id}")]
@@ -51,6 +38,15 @@ public class ProductoController : ControllerBase
         return Ok(productosDto);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ObtenerProductos(
+    [FromQuery] FiltrosProductoDto filtros)
+    {
+        var productos = await _productoService.Filtrar(filtros);
+
+        return Ok(productos.Select(ProductoMapper.ToDto));
+    }
+
     [HttpPost]
     public async Task<IActionResult> CrearProducto([FromBody] CrearProductoDto dto)
     {
@@ -59,7 +55,7 @@ public class ProductoController : ControllerBase
         await _productoService.GuardarProducto(producto);
 
         return CreatedAtAction(
-            nameof(GetAll),
+            nameof(ObtenerPorId),
             new { id = producto.Id },
             ProductoMapper.ToDto(producto)
         );
